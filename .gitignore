@@ -1,3 +1,5 @@
-.env
-node_modules/
-package-lock.json
+kodius_task_backend/.env
+kodius_task_backend/node_modules/
+kodius_task_backend/package-lock.json
+kodius_task_frontend/node_modules/
+kodius_task_frontend/package-lock.json

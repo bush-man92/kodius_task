@@ -11,9 +11,15 @@ export default (sequelize, DataTypes) => {
 		password:{
 			type:DataTypes.STRING
 		},
+		is_banned:{
+			type:DataTypes.BOOLEAN
+		},
 		is_logged_in:{
 			type:DataTypes.BOOLEAN
 		},
+		role:{
+			type:DataTypes.INTEGER
+		}
 	});
 
 		return User;

@@ -1,0 +1,61 @@
+#itemcontainer {
+	max-width: 1000px;
+	max-height: 200px;
+	min-width: 1000px;
+	min-height: 200px;
+	opacity: 0.9;
+	padding: 50px;
+	display: flex;
+}
+
+#item_image {
+	max-height: 200px;
+	min-height: 200px;
+	max-width: 200px;
+	min-width: 200px;
+}
+
+#item_col{
+	font-family: 'Amatic SC', cursive;
+	font-weight: bold;
+	font-size: 25px;
+	max-height: 200px;
+	max-width: 600px;
+	min-width: 600px;
+	min-height: 200px;
+	text-transform: uppercase;
+}
+
+#item_name{
+	position: top;
+	text-align: center;
+	background-color: #009999;
+	max-width: 600px;
+	max-height: 100px;
+	min-height: 100px;
+}
+
+#item_price{
+	background-color: yellowgreen;
+	text-align: center;
+	font-family: 'Amatic SC', cursive;
+	font-weight: bold;
+	font-size: 25px;
+	max-width: 200px;
+	min-width: 200px;
+	max-height: 200px;
+	min-height: 200px;
+}
+
+#item_row {
+	background-color: white;
+	display: flex;
+}
+
+#about_item {
+	overflow-wrap: break-word;
+	overflow-y: scroll;
+	max-width: 600px;
+	max-height: 100px;
+	min-height: 100px;
+}

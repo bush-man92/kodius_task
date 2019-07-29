@@ -5,14 +5,14 @@ import _ from 'lodash';
 
 const allUsers = ({ models }) => { return models.User.findAll() };
 
-const getUser = ({ username, id }, { models }) =>{
+const getUser = (parent, { username, id }, { models }) =>{
 			if (username) {
 				return models.User.findOne({where:{ username } }) }
 			else if (id) {
 				return models.User.findOne({where:{ id } }) }
 		};
 
-const userOverview = async ({ id }, { models }) => {
+const userOverview = async (parent, { id }, { models }) => {
 			const users = await models.User.findAll();
 			class userView {
 				constructor(username, id, is_logged_in) {
@@ -32,7 +32,7 @@ const userOverview = async ({ id }, { models }) => {
 			return user_views;
 }
 		
-const updateUser = async ({ username, newUsername, password, newPassword, token }, { models, SECRET }) => {
+const updateUser = async (parent, { username, newUsername, password, newPassword, token }, { models, SECRET }) => {
 			const token_check = await jwt.verify(token, SECRET);
 			const user = await models.User.findOne({ where: { id: token_check.user.id } });
 			const response = [];
@@ -62,12 +62,12 @@ const updateUser = async ({ username, newUsername, password, newPassword, token 
 			return response;
 			}
 
-const deleteUser = ({ id } , { models }) => {
+const deleteUser = (parent, { id } , { models }) => {
 			models.User.destroy({
 				where: { id } })
 		};
 
-const banUser = async ({ username, token}, { models, SECRET }) => {
+const banUser = async (parent, { username, token}, { models, SECRET }) => {
 			const token_check = await jwt.verify(token, SECRET);
 			const user = await models.User.findOne({ where: { id : token_check.user.id } });
 			if (user.role == 2) {
@@ -80,32 +80,21 @@ const banUser = async ({ username, token}, { models, SECRET }) => {
 			}
 		};
 
-const validToken = async ({ token }, { models, SECRET }) => {
-			const check_token = await jwt.verify(token, SECRET)
-			const user = await models.User.findOne({ where: { id : check_token.user.id } })
-			class validToken {
-				constructor(response, id) {
-					this.response = response;
-					this.id = id;
-				}
-			}
-			if (user.is_logged_in) {
-				return new validToken("True", check_token.user.id)
-			}
-			else {
-				return new validToken("False", check_token.user.id)
-			}
-}
-
-const register = async ({username, password, email} ,{ models, SECRET}) =>{
+const register = async (parent, {username, password, email} ,{ models, SECRET}) =>{
 			const check_username = await models.User.findOne({ where: { username } })
 			const check_email = await models.User.findOne({ where: {email} })
+			class response {
+				constructor(response, id) {
+					this.response = response,
+					this.id = id
+				}
+			}
 			if (check_username != null) {
-				return 'Username already taken';
+				return new response ('Username already taken', 0);
 			}
 
 			else if (check_email != null) {
-				return 'Email already exists';
+				return new response ('Email already exists', 0);
 			}
 			
 			const user = {username, password, email, is_banned : false, is_logged_in : true, role: 1}
@@ -114,23 +103,21 @@ const register = async ({username, password, email} ,{ models, SECRET}) =>{
 
 		  	const token = jwt.sign(
 				{ user: _.pick(user2, ['id', 'role', 'is_logged_in'])}, SECRET, {expiresIn: '1d' });
-			/*await pubsub.publish("2", {
-				UserAdded: user.username});*/
-			return token;
+
+			return new response(token, user2.id)
 		};
 
-const login = async ({ username, password, used_token } ,{ models, SECRET }) => {
-			if (used_token) {
-				const used_token_check = await jwt.verify(used_token, SECRET);
-				const user = await models.User.findOne({ where: { id : used_token_check.user.id } });
-				if (user.is_logged_in) {
-					return 'Logged in'
+const login = async (parent, { username, password } ,{ models, SECRET }) => {
+
+			class response {
+				constructor(response, id) {
+					this.response = response,
+					this.id = id
 				}
 			}
-			
 			const user = await models.User.findOne({ where: { username } });
 			if (!user) {
-				return ('There is no user with that username');
+				return new response ('There is no user with that username', 0);
 			}
 			if (user.is_banned && Date.now() < new Date(user.updatedAt.getTime() + 86400000)) {
 				var banned_until = new Date(user.updatedAt.getTime() + 86400000)
@@ -139,18 +126,18 @@ const login = async ({ username, password, used_token } ,{ models, SECRET }) => 
 
 			const valid = await bcrypt.compare(password, user.password);
 			if(!valid){
-				return ('Incorrect password');
+				return new response ('Incorrect password', 0);
 			}
 
 			models.User.update({is_logged_in : true},
 				{ where: { username: user.username } })
 			const token = jwt.sign(
-			{ user: _.pick(user, ['id', 'role', 'is_logged_in'])}, SECRET, {expiresIn: '7d' });
+			{ user: _.pick(user, ['id', 'role'])}, SECRET, {expiresIn: '30d' });
 
-			return token;
+			return new response(token, user.id)
 		};
 
-const logout = async ({ logged_token } , {models, SECRET}) => {
+const logout = async (parent, { logged_token } , {models, SECRET}) => {
 			const token = await jwt.verify(logged_token, SECRET);
 			const user = await models.User.findOne({ where: { id : token.user.id } })
 
@@ -160,4 +147,4 @@ const logout = async ({ logged_token } , {models, SECRET}) => {
 			return "Succesfull logout"
 };
 
-export { allUsers, getUser, updateUser, deleteUser, register, login, logout, banUser, validToken, userOverview };
+export { allUsers, getUser, updateUser, deleteUser, register, login, logout, banUser, userOverview };
