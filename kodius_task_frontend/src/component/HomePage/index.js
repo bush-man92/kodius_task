@@ -56,13 +56,15 @@ class HomePage extends Component {
       id: num
     })
   }
-  handleToken = async () => {
+  handleToken = () => {
     const getToken = JSON.parse(localStorage.getItem('jwt'))
     if (getToken !== null) {
       this.setState({
         token: true,
       })
-      this.setId(getToken.data.login.id)
+      this.setId({
+        id: getToken.data.login.id
+      })
     }
     else {
       this.setState({
@@ -104,7 +106,7 @@ class HomePage extends Component {
     const logged_token = JSON.parse(localStorage.getItem('jwt'));
 		await this.props.mutate( {
 			variables: {
-				logged_token: logged_token.data.login.response || logged_token.data.register.response
+				logged_token: logged_token.data.login.response
 				}
 			}
     )
@@ -138,7 +140,7 @@ class HomePage extends Component {
           {this.state.signup ? <Login handleBack={this.handleBack} handleToken={this.handleToken} setId={this.setId} /> :
           <Container>
             {this.state.sidebar ? <Sidebar id={this.state.id} handlePurchase={this.handlePurchase}
-            closePurchase={this.closePurchase} purchase={this.state.purchase}/> : null}
+            closePurchase={this.closePurchase} purchase={this.state.purchase} token={this.state.token}/> : null}
             <Row>
               <ButtonGroup md= 'auto' className="positionOfButtons">
                 <Form>
@@ -157,11 +159,9 @@ class HomePage extends Component {
                 {this.state.token ?
                   <Button id='button' onClick={this.handleLogout}>Signout</Button>:
                   <Button id='button' onClick={this.handleSignup}>Signup</Button>}
-                {this.state.search ? 
-                  <Button id='button' onClick={this.closeSearch}>Back</Button> : null}
               </ButtonGroup>
             </Row>
-            <ItemsView token={this.state.token} search={this.state.search} search_input = {this.state.search_input}></ItemsView>
+            <ItemsView id={this.state.id} search={this.state.search} search_input = {this.state.search_input} token={this.state.token}></ItemsView>
           </Container> }
         </div>}
       </>

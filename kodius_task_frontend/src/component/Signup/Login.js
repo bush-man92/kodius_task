@@ -66,8 +66,8 @@ class Login extends Component {
       }
       else {
         localStorage.setItem('jwt', JSON.stringify(token));
-        this.props.handleToken();
         this.props.setId(token.data.login.id)
+        this.props.handleToken();
         this.props.handleBack();
       }
     }

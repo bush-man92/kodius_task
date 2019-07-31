@@ -4,15 +4,17 @@ import { graphql, Mutation} from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Sidebar from '../Sidebar/Sidebar';
+import Order from './order';
+import '../Signup/Login.css'
 
 const createPurchase = gql`
-  mutation createPurchase ($email: String!, $address: String!, $security_number: String!, $credit_card: String!, $promotion: String) {
-    createPurchase (email: $email, address: $address, security_number: $security_number, credit_card: $credit_card, promotion: $promotion) {
+  mutation createPurchase ($email: String!, $address: String!, $security_number: String!, $credit_card: String!, $cupon_password: String) {
+    createPurchase (email: $email, address: $address, security_number: $security_number, credit_card: $credit_card, cupon_password: $cupon_password) {
         item_name
         item_quantity
         item_price
 		total_price
-		discount
+		cupon_password
     }
   }
 `;
@@ -25,22 +27,48 @@ class PurchasePage extends Component {
           address: '',
           credit_card: '',
           security_number: '',
-          promotion: '',
+          cupon_password: '',
+          data: {},
+          order: false
       }
     }
     
     handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-      };
+    };
 
+    handleOrder = () => {
+        this.setState({
+            order:true,
+        })
+    }
+    closeOrder = () => {
+        this.setState({
+            order:false,
+        })
+    }
+    returnTwo = async (e, createPurchase) => {
+        e.preventDefault()
+        const response = await createPurchase()
+        this.setData(response)
+        this.handleOrder()
+    }
+    setData = (target) => {
+        this.setState({
+            data: target
+        })
+    }
     render() {
         return (
-            <Container>
+            <div id='bc-login'>
+            {this.state.order ?
+                <Order data={this.state.data} closeOrder={this.closeOrder} closePurchase={this.props.closePurchase}></Order> :
+            <Container id='cont1'>
                 <Row>
                     <h1>PURCHASE</h1>
                 </Row>
                 <Sidebar id={this.props.id} handlePurchase={this.props.handlePurchase}
-                closePurchase={this.props.closePurchase} purchase={this.props.purchase}></Sidebar>
+                closePurchase={this.props.closePurchase} purchase={this.props.purchase} handleData={this.handleData}></Sidebar>
                 <Form>
                 <FormGroup>
                     <Label className= 'white' htmlFor='Email'>Email</Label>
@@ -74,22 +102,24 @@ class PurchasePage extends Component {
                     <Label className= 'white' >Promotion</Label>
                         <Input 
                             type="text"
-                            name="promotion"
+                            name="cupon_password"
                             placeholder="Type your promotion"
-                            value = {this.state.promotion}
+                            value = {this.state.cupon_password}
                             onChange = {e => this.handleChange(e)} />
                     <Mutation mutation={createPurchase} variables={{ 
                             email: this.state.email,
                             address: this.state.address,
                             security_number: this.state.security_number,
                             credit_card: this.state.credit_card,
-                            promotion: this.state.promotion
+                            cupon_password: this.state.cupon_password
           				}}>
-          				{createPurchase => <Button onClick={createPurchase}>Purchase</Button>}
-        			</Mutation>}
+          				{(createPurchase) => {
+                              return <Button id='button' onClick={e => this.returnTwo(e, createPurchase)}>Purchase</Button>}}
+        			</Mutation>
                 </FormGroup>
                 </Form>
-            </Container>
+            </Container>}
+            </div>
         )
     }
 }

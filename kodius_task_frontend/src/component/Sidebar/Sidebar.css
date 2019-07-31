@@ -1,28 +1,22 @@
-/*#cont{
-	color: white;
+#cont {
 	display: flex;
-	flex-direction: row;
-	height: 100vh;
-	width: 100%;
-	justify-content: flex-start;
+	background-color: #009999;
 }
-.itemsList{
-	color: #0B0C10;
-}
-#button1{
-	margin-top: 20px;
-	background: #45A29E;
-}
-.groups {
-	
-	 
-}
-.input{
+
+#cart_items {
 	display: flex;
- align-items: flex-end;
-  
+	font-family: 'Amatic SC', cursive;
+	align-items: center;
+	text-transform: uppercase;
+	margin-left: 20px;
 }
-#inputArea{
-	width: 300px;
- height: 200px;
-}*/
+
+#your_cart {
+	display: flex;
+	font-family: 'Amatic SC', cursive;
+	align-items: center;
+}
+
+#row1 {
+	display: flex;
+}

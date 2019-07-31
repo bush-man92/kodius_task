@@ -44,11 +44,12 @@ export default gql`
 	}
 
 	type PurchaseResponse {
+		item_id: Int!
 		item_name: String!
 		item_quantity: Int!
 		item_price: Int!
 		total_price: Int!
-		discount: String
+		cupon_password: String
 	}
 
 	type Query {
@@ -63,7 +64,7 @@ export default gql`
 
 	type Mutation {
 		createCupon(discount: Int!, cupon_password: String!, modifier: String!): String!
-		createPurchase(email: String!, address: String!, security_number: String!, credit_card: String!, promotion: String): [PurchaseResponse]
+		createPurchase(email: String!, address: String!, security_number: String!, credit_card: String!, cupon_password: String): [PurchaseResponse]
 		addToCart(token: String!, item_id: Int!, modifier: String!): String
 		addItem(name: String!, price: Int!, picture: String, about: String): String!
     	register(username: String!, password: String!, email: String!): Response!

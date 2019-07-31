@@ -46,3 +46,8 @@
 	align-items: center;
 	margin: auto;
 }
+#your_cart {
+	display: flex;
+	font-family: 'Amatic SC', cursive;
+	align-items: center;
+}

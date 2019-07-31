@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { graphql, Mutation } from 'react-apollo';
 
 import './items.css';
+import { timingSafeEqual } from 'crypto';
 
 const view = gql`
   query itemsOverview ($name: String) {
@@ -46,15 +47,11 @@ const AddButton = class extends Component {
     }
   }
 
-  componentDidMount() {
-    this.handleToken();
-  }
-
   returnToken = () => {
-    const getToken = JSON.parse(localStorage.getItem('jwt'));
-    const token = getToken.data.login.response || getToken.data.register.response;
-    return token;
-  };
+		const getToken = JSON.parse(localStorage.getItem('jwt'));
+		const token = getToken.data.login.response;
+		return token;
+	};
 
   render() {
     return (

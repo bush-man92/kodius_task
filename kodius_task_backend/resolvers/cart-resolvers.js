@@ -5,7 +5,7 @@ const addToCart = async (parent, { token, item_id, modifier } ,{ models, SECRET 
     const token_check = await jwt.verify(token, SECRET);
     const user = await models.User.findOne({ where: { id: token_check.user.id } });
     const user_id = user.id;
-    const check_cart = await models.Cart.findOne({ where: { item_id : item_id}})
+    const check_cart = await models.Cart.findOne({ where: { user_id : user_id, item_id : item_id}})
     if (check_cart !== null) {
         if (check_cart.item_quantity === 0) {
             models.Cart.destroy({ where: { item_id : item_id}})
@@ -48,6 +48,7 @@ const cartView = async (parent, { id }, { models }) => {
         const item = new cartView(element.id, element.user_id, element.item_id, element.item_quantity,)
         cart_views.push(item)
     });
+    console.log(cart_views)
     const items_func = async () => {
         const complete_view = []
         for(const element of cart_views) {

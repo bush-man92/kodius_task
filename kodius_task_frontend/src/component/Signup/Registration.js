@@ -71,10 +71,9 @@ class Registration extends Component {
         this.setState({ emailValid })
       }
       else {
-        localStorage.setItem('jwt', JSON.stringify(token));
-        this.props.handleToken();
         this.props.setId(token.data.register.id)
-        this.props.handleBack();
+        this.props.handleToken();
+        this.props.closeRegister();
       }
     }}
 

@@ -101,10 +101,7 @@ const register = async (parent, {username, password, email} ,{ models, SECRET}) 
 			user.password = await bcrypt.hash(user.password, 12);
 			const user2 = await models.User.create(user);
 
-		  	const token = jwt.sign(
-				{ user: _.pick(user2, ['id', 'role', 'is_logged_in'])}, SECRET, {expiresIn: '1d' });
-
-			return new response(token, user2.id)
+			return new response("Succesful register", user2.id)
 		};
 
 const login = async (parent, { username, password } ,{ models, SECRET }) => {
