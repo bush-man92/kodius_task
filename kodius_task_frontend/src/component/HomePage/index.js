@@ -9,6 +9,8 @@ import Login from '../Signup/Login';
 import Sidebar from '../Sidebar/Sidebar'
 import ItemsView from './ItemsView';
 import PurchasePage from '../PurchasePage/purchase';
+import AddItem from './AddItem'
+import AddCupon from './AddCupon'
 
 const logoutMutation = gql`
   mutation logout($logged_token: String!) {
@@ -26,7 +28,9 @@ class HomePage extends Component {
       id: null,
       search: false,
       search_input: "",
-      purchase: false
+      purchase: false,
+      addItem: false,
+      addCupon: false
     }
   }
   
@@ -97,6 +101,26 @@ class HomePage extends Component {
       purchase: false,
     })
   }
+  handleAddItem = () => {
+    this.setState({
+      addItem: true
+    })
+  }
+  closeAddItem = () => {
+    this.setState({
+      addItem: false
+    })
+  }
+  handleAddCupon = () => {
+    this.setState({
+      addCupon: true
+    })
+  }
+  closeAddCupon = () => {
+    this.setState({
+      addCupon: false
+    })
+  }
 
   componentDidMount() {
     this.handleToken();
@@ -134,6 +158,10 @@ class HomePage extends Component {
     return(
       <>
         <Particles className='particles' params={particleOptions} />
+        {this.state.addCupon ? <AddCupon closeAddCupon = {this.closeAddCupon}></AddCupon> : 
+        <div>
+        {this.state.addItem ? <AddItem closeAddItem={this.closeAddItem}></AddItem> :
+        <div>
         {this.state.purchase ? <PurchasePage id={this.state.id} handlePurchase={this.handlePurchase}
             closePurchase={this.closePurchase} purchase={this.state.purchase}></PurchasePage> :
         <div>
@@ -153,6 +181,8 @@ class HomePage extends Component {
                   />
                 </Form>
                 <Button id='button' onClick={this.handleSearch}>Search</Button>
+                <Button id='button' onClick={this.handleAddItem}>Add items</Button>
+                <Button id='button' onClick={this.handleAddCupon}>Add cupon</Button>
                 {this.state.sidebar ?
                   <Button id='button' onClick={this.closeSidebar}>Close</Button> :
                   <Button id='button' onClick={this.handleSidebar}>Cart</Button>}
@@ -163,6 +193,8 @@ class HomePage extends Component {
             </Row>
             <ItemsView id={this.state.id} search={this.state.search} search_input = {this.state.search_input} token={this.state.token}></ItemsView>
           </Container> }
+        </div>}
+        </div>}
         </div>}
       </>
     );
